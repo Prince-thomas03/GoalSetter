@@ -1,27 +1,71 @@
-const asyncHandler=require('express-async-handler')
+const asyncHandler = require('express-async-handler')
 
-const getGoals = asyncHandler(async(req, res) => {
+//the below goal model 'Goal' have the moongse methods which is used to crud  in database 
+const Goal = require('../modals/goalModal')
 
-    res.status(200).json({ message: "got all goals" })
+//@desc get goals
+//@route GET/api/goals
+//@access private
+const getGoals = asyncHandler(async (req, res) => {
+    const goals = await Goal.find()
+    console.log(goals);
+    res.status(200).json(goals)
 })
 
-const setGoals =asyncHandler( async(req, res) => {
+//@desc Set goals
+//@route POST/api/goals
+//@access private
+
+const setGoals = asyncHandler(async (req, res) => {
 
     if (!req.body.text) {
         res.status(400)
         throw new Error("please  add the text")
     }
 
-    res.status(200).json({ message: "all goals set" })
+    const goal = await Goal.create({
+        text: req.body.text
+    })
+
+    res.status(200).json(goal)
 })
 
-const updateGoals =asyncHandler( async(req, res) => {
-    res.status(200).json({ message: `all goals got updated ${req.params.id}` })
+
+//@DESC update goals
+//@route  UPDATE/api/goals
+const updateGoals = asyncHandler(async (req, res) => {
+
+    let goal = Goal.findById(req.params.id)
+
+    if (!goal) {
+        res.status(400)
+        throw new Error('Goal not found')
+    }
+
+    let updatedGoal = await Goal.findByIdAndUpdate(req.params.id, req.body, { new: true })
+
+
+    res.status(200).json(updatedGoal)
 })
 
-const deleteGoals = asyncHandler(async(req, res) => {
-    res.status(200).json({ message: `delete all goals  ${req.params.id}` })
+
+//@DESC update goals
+//@route  DELETE/api/goals
+
+const deleteGoals = asyncHandler(async (req, res) => {
+
+    let goal = Goal.findById(req.params.id)
+
+    if (!goal) {
+        res.status(400)
+        throw new Error("not goal to be deleted")
+    }
+
+    await goal.remove()
+
+    res.status(200).json({ message: `deleted that particular goals  ${req.params.id}` })
 })
+
 
 module.exports = {
     getGoals, setGoals, updateGoals, deleteGoals
