@@ -1,7 +1,12 @@
 const express = require('express')
 const router = express()
 
-const {getGoals,setGoals,updateGoals,deleteGoals}=require('../controllers/goalControllers')
+const {  getGoals,
+    setGoal,
+    updateGoal,
+    deleteGoal,
+}=require('../controllers/goalControllers')
+const {protect}=require('../middleware/authMiddleware')
 
 //routes can be shorted end to the following also
 
@@ -10,14 +15,14 @@ const {getGoals,setGoals,updateGoals,deleteGoals}=require('../controllers/goalCo
 
 
 
-router.get('/', getGoals)
+router.get('/', protect,getGoals)
 
-router.post('/', setGoals)
-
-
-router.put('/:id',updateGoals)
+router.post('/',protect ,setGoal)
 
 
-router.delete('/:id',deleteGoals)
+router.put('/:id',protect,updateGoal)
+
+
+router.delete('/:id',protect,deleteGoal)
 
 module.exports = router
