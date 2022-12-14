@@ -4,9 +4,9 @@ const asynhandler = require('express-async-handler')
 const User = require('../modals/userModals')
 const { find } = require('../modals/userModals')
 
-//@desc register user
-//@route post/api/users
-//@access public
+// @desc register user
+// @route post/api/users
+// @access public
 const registerUser = asynhandler(async (req, res) => {
 
     //destructuring data from req.body
@@ -23,7 +23,7 @@ const registerUser = asynhandler(async (req, res) => {
     //checking if user already exsist or not
     const userExsist = await User.findOne({ email })
     if (userExsist) {
-        res.json(400)
+        res.status(400)
         throw new Error('User already exsist')
     }
 
